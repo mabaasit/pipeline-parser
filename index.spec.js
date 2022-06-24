@@ -272,4 +272,48 @@ describe('should parse a pipeline', function () {
       expect(parser(input)).deep.equal(output);
     });
   });
+
+  describe('bson values', function () {
+    it('preserves bson', function () {
+      const input = `[
+        {
+          // $match: {
+          //   _id: ObjectId("5c8f8f8f8f8f8f8f8f8f8f8")
+          // },
+        },
+        {
+          // $sort: {
+          //   age: -1
+          // },
+        },
+        {
+          /**
+           * $project: {
+           *  _id: -1,
+           *  name: /berlin/ig,
+           * } 
+           */
+        }
+      ]`;
+      const output = [
+        {
+          operator: '$match',
+          source: '{\n  _id: ObjectId("5c8f8f8f8f8f8f8f8f8f8f8")\n}',
+          isEnabled: false,
+        },
+        {
+          operator: '$sort',
+          source: '{\n  age: -1\n}',
+          isEnabled: false,
+        },
+        {
+          operator: '$project',
+          source: '{\n  _id: -1,\n  name: /berlin/ig\n}',
+          isEnabled: false,
+        },
+      ];
+
+      expect(parser(input)).deep.equal(output);
+    });
+  });
 });
